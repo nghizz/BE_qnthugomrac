@@ -1,44 +1,70 @@
+// src/auth/auth.guard.ts
 import {
   Injectable,
   CanActivate,
   ExecutionContext,
   UnauthorizedException,
 } from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
+import { Socket } from 'socket.io';
 import { Request } from 'express';
 
-// Mở rộng kiểu Request để thêm user
 interface CustomRequest extends Request {
   user?: any;
 }
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(
-    private readonly jwtService: JwtService,
-    private reflector: Reflector,
-  ) {}
+  constructor(private readonly jwtService: JwtService) {}
 
   canActivate(context: ExecutionContext): boolean {
-    const request = context.switchToHttp().getRequest<CustomRequest>();
-    const authHeader = request.headers.authorization;
+    const ctxType = context.getType<'http' | 'ws' | string>();
+    let token: string | undefined;
+    let payload: any;
 
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      throw new UnauthorizedException('Token is missing or invalid');
-    }
-
-    const token = authHeader.split(' ')[1]; // Lấy token từ header
-
-    try {
-      const payload = this.jwtService.verify(token);
-      request.user = payload; // Gán payload vào request để sử dụng trong các controller
-      return true;
-    } catch (error) {
-      if (error.name === 'TokenExpiredError') {
-        throw new UnauthorizedException('Token has expired');
+    if (ctxType === 'http') {
+      // HTTP request
+      const req = context.switchToHttp().getRequest<CustomRequest>();
+      const authHeader = req.headers.authorization;
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        throw new UnauthorizedException('Token is missing or invalid');
       }
-      throw new UnauthorizedException('Token is invalid');
+      token = authHeader.split(' ')[1];
+      try {
+        payload = this.jwtService.verify(token);
+        req.user = payload;
+        return true;
+      } catch (err) {
+        this.handleJwtError(err);
+      }
+    } else if (ctxType === 'ws') {
+      // WebSocket connection
+      const client: Socket = context.switchToWs().getClient<Socket>();
+      // Bạn có thể lấy từ client.handshake.auth hoặc query
+      token =
+        client.handshake.auth?.token ||
+        (client.handshake.query?.token as string);
+      if (!token) {
+        throw new UnauthorizedException('WebSocket token is missing');
+      }
+      try {
+        payload = this.jwtService.verify(token);
+        // gán vào client.data để gateway có thể đọc
+        client.data.user = payload;
+        return true;
+      } catch (err) {
+        this.handleJwtError(err);
+      }
     }
+
+    // Loại context khác (RPC, gRPC...) mặc định block
+    throw new UnauthorizedException();
+  }
+
+  private handleJwtError(error: any): never {
+    if (error.name === 'TokenExpiredError') {
+      throw new UnauthorizedException('Token has expired');
+    }
+    throw new UnauthorizedException('Token is invalid');
   }
 }
