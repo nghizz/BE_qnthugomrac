@@ -27,3 +27,4 @@ export class RefreshTokenDto {
   @ApiProperty({ example: 'token' })
   refreshToken: string;
 }
+
