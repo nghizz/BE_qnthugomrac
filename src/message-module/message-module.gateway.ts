@@ -34,7 +34,7 @@ type AuthenticatedSocket = Socket & {
 @WebSocketGateway({
   namespace: '/chat',
   path: '/socket.io',
-  cors: { origin: 'http://localhost:5173', credentials: true },
+  cors: { origin: 'https://map-thugomrac.vercel.app', credentials: true },
 })
 // Bỏ dòng này đi nếu không dùng AuthGuard cho @SubscribeMessage
 // @UseGuards(AuthGuard)

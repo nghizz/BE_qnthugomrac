@@ -17,7 +17,7 @@ async function bootstrap() {
 
   // Cấu hình CORS cho cả HTTP và WebSocket
   app.enableCors({
-    origin: 'http://localhost:5173',
+    origin: 'https://map-thugomrac.vercel.app',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     allowedHeaders: 'Content-Type,Authorization',
     credentials: true,
