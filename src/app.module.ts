@@ -22,6 +22,9 @@ dotenv.config();
       database: process.env.DB_DATABASE,
       autoLoadEntities: true,
       synchronize: true,
+      ssl: {
+        rejectUnauthorized: false // Chỉ sử dụng trong môi trường development
+      }
     }),
     CollectionPointModule,
     AuthModule,
