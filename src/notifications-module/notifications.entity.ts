@@ -30,13 +30,14 @@ export class Notification {
 
   @Column({
     type: 'integer',
-    name: 'collectionpointid', // DB column: "collectionpointid"
+    name: 'collectionPointId', // DB column: "collectionpointid"
   })
   collectionPointId: number;
 
   @Column({
     type: 'text',
     name: 'message',           // DB column: "message" (kiểu TEXT)
+    nullable: true
   })
   message: string;
 
