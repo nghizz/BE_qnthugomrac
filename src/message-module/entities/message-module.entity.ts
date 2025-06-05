@@ -16,7 +16,7 @@ export class MessageEntity {
   @Column({ name: 'receiver_id' })
   receiverId: number
 
-  @Column('text')
+  @Column('content')
   content: string
 
   @CreateDateColumn({ name: 'created_at' })
