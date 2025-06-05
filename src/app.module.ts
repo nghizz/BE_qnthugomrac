@@ -23,7 +23,8 @@ dotenv.config();
       autoLoadEntities: true,
       ssl: {
         rejectUnauthorized: false // Chỉ sử dụng trong môi trường development
-      }
+      },
+      synchronize: true,
     }),
     CollectionPointModule,
     AuthModule,
