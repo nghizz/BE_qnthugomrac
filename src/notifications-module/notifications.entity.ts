@@ -6,6 +6,7 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
+
 import { User } from '../auth-module/auth.entity';
 import { CollectionPoint } from '../collection-point/entities/collection-point.entity';
 
@@ -17,21 +18,25 @@ export class Notification {
   @Column({
     type: 'boolean',
     default: false,
+    name: 'status',           // DB column: "status"
   })
   status: boolean; // false = chưa đọc, true = đã đọc
 
   @Column({
     type: 'integer',
+    name: 'userid',            // DB column: "userid"
   })
   userId: number;
 
   @Column({
     type: 'integer',
+    name: 'collectionpointid', // DB column: "collectionpointid"
   })
   collectionPointId: number;
 
   @Column({
-    type: 'character varying',
+    type: 'text',
+    name: 'message',           // DB column: "message" (kiểu TEXT)
   })
   message: string;
 
@@ -43,10 +48,10 @@ export class Notification {
   created_at: Date;
 
   @ManyToOne(() => User)
-  @JoinColumn({ name: 'userId' })
+  @JoinColumn({ name: 'userid' })           // phải khớp với @Column({ name: 'userid' })
   user: User;
 
   @ManyToOne(() => CollectionPoint)
-  @JoinColumn({ name: 'collectionPointId' })
+  @JoinColumn({ name: 'collectionpointid' }) // phải khớp với @Column({ name: 'collectionpointid' })
   collectionPoint: CollectionPoint;
 }
