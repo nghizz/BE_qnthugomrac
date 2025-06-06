@@ -24,13 +24,13 @@ export class Notification {
 
   @Column({
     type: 'integer',
-    name: 'userId',            // DB column: "userid"
+    name: 'userid',            // DB column: "userid"
   })
   userId: number;
 
   @Column({
     type: 'integer',
-    name: 'collectionPointId', // DB column: "collectionpointid"
+    name: 'collectionpointid', // DB column: "collectionpointid"
   })
   collectionPointId: number;
 
@@ -49,10 +49,10 @@ export class Notification {
   created_at: Date;
 
   @ManyToOne(() => User)
-  @JoinColumn({ name: 'userId' })           // phải khớp với @Column({ name: 'userid' })
+  @JoinColumn({ name: 'userid' })           // phải khớp với @Column({ name: 'userid' })
   user: User;
 
   @ManyToOne(() => CollectionPoint)
-  @JoinColumn({ name: 'collectionPointId' }) // phải khớp với @Column({ name: 'collectionpointid' })
+  @JoinColumn({ name: 'collectionpointid' }) // phải khớp với @Column({ name: 'collectionpointid' })
   collectionPoint: CollectionPoint;
 }

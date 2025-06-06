@@ -21,10 +21,9 @@ dotenv.config();
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
       autoLoadEntities: true,
-      // ssl: {
-      //   rejectUnauthorized: false // Chỉ sử dụng trong môi trường development
-      // },
-      // synchronize: true,
+      ssl: {
+        rejectUnauthorized: false // Chỉ sử dụng trong môi trường development
+      },
     }),
     CollectionPointModule,
     AuthModule,
